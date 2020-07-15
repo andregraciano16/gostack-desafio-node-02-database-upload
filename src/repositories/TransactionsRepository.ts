@@ -10,9 +10,9 @@ interface Balance {
 
 @EntityRepository(Transaction)
 class TransactionsRepository extends Repository<Transaction> {
-  public async getBalance(): Promise<Balance> {
-    // TODO
-  }
+  // public async getBalance(): Promise<Balance> {
+  //   return balance;
+  // }
 }
 
 export default TransactionsRepository;

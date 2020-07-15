@@ -22,6 +22,10 @@ export default class Transaction1594695022344 implements MigrationInterface {
             type: 'varchar',
           },
           {
+            name: 'value',
+            type: 'real',
+          },
+          {
             name: 'category_id',
             type: 'varchar',
           },
