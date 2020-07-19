@@ -4,6 +4,7 @@ import { getCustomRepository } from 'typeorm';
 import Transaction from '../models/Transaction';
 import TransactionRepository from '../repositories/TransactionsRepository';
 import CategoryRepository from '../repositories/CategoryRepository';
+import AppError from '../errors/AppError';
 
 interface Request {
   title: string;
@@ -19,7 +20,7 @@ class CreateTransactionService {
     type,
     category,
   }: Request): Promise<Transaction> {
-    const transactionalRepository = getCustomRepository(TransactionRepository);
+    const transactionRepository = getCustomRepository(TransactionRepository);
     const categoryRepository = getCustomRepository(CategoryRepository);
 
     let categoria = await categoryRepository.findOne({
@@ -32,14 +33,21 @@ class CreateTransactionService {
       });
       await categoryRepository.save(categoria);
     }
-    const transaction = transactionalRepository.create({
+
+    const { total } = await transactionRepository.getBalance();
+
+    if (type === 'outcome' && total < value) {
+      throw new AppError('Insufficient account balance', 400);
+    }
+
+    const transaction = transactionRepository.create({
       title,
       type,
       value,
       category_id: categoria.id,
     });
 
-    await transactionalRepository.save(transaction);
+    await transactionRepository.save(transaction);
 
     return transaction;
   }

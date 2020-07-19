@@ -6,11 +6,9 @@ class DeleteTransactionService {
   public async execute(id: string): Promise<void> {
     const transactionRepository = getCustomRepository(TransactionRepository);
     const transaction = await transactionRepository.findOne({ where: { id } });
-    console.log(transaction);
     if (!transaction) {
-      throw new AppError('Transacion does not exist', 400);
+      throw new AppError('Transacion does not exist');
     }
-    console.log(id);
     await transactionRepository.delete(id);
   }
 }
